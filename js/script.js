@@ -17,6 +17,8 @@ $(window).on('load', function(){
 $userTitleSelection.on('change', function(){
   if (this.value === "other"){
     $otherTitle.show();
+  } else {
+    $otherTitle.hide();
   }
 });
 
@@ -51,49 +53,111 @@ const $express = $('.activities input[name="express"]');
 const $node = $('.activities input[name="node"]');
 const $buildTools = $('.activities input[name="build-tools"]');
 const $npm = $('.activities input[name="npm"]');
+// Sum in total label
+let sum = 0;
+$('.activities').append('<label id="totalSum"></label>')
 
+// Update and show the Total Sum or hide it if Sum = $0
+const updateSum = (sum) => {
+  if (sum === 0) {
+    $('#totalSum').hide();
+  }else {
+    $('#totalSum').text('Total: $'+sum);
+    $('#totalSum').show();
+  }
+}
 
-// $all.on('change', function(){
-//   if () {
-//
-//   }
-// });
-
-$jsFrameworks.on('change', function(){
-  if ($(this).is(':checked')) {
-    console.log("yay")
-    $('.activities input[name="express"]').attr("disabled", true);
+// Disable or Enable activities when on same day and time
+// aswell change css to line-through if disabled or non when enabled
+const disableOrEnableActivity = (name, status) => {
+  if ( status === true){
+    $('.activities input[name="'+name+'"]').parent().css("text-decoration", "line-through");
   } else {
-    $('.activities input[name="express"]').attr("disabled", false);
+    $('.activities input[name="'+name+'"]').parent().css("text-decoration", "none");
+  }
+  $('.activities input[name="'+name+'"]').attr("disabled", status);
+}
+
+// Listener vor Activities label "all"
+$all.on('change', function(){
+  if ($(this).is(':checked')) {
+    sum += 200;
+  } else {
+    sum -= 200;
   }
 });
 
+// Listener vor Activities label "js-libs"
+$jsLibs.on('change', function(){
+  if ($(this).is(':checked')) {
+    // disable same day and time Activity
+    disableOrEnableActivity('node', true);
+    sum += 100;
+  } else {
+    // enable same day and time Activity because of uncheck
+    disableOrEnableActivity('node', false);
+    sum -= 100;
+  }
+});
 
+// Listener vor Activities label "node"
+$node.on('change', function(){
+  if ($(this).is(':checked')) {
+    // disable same day and time Activity
+    disableOrEnableActivity('js-libs', true);
+    sum += 100;
+  } else {
+    // enable same day and time Activity because of uncheck
+    disableOrEnableActivity('js-libs', false);
+    sum -= 100;
+  }
+});
 
+// Listener vor Activities label "express"
+$express.on('change', function(){
+  if ($(this).is(':checked')) {
+    // disable same day and time Activity
+    disableOrEnableActivity('js-frameworks' , true);
+    sum += 100;
+  } else {
+    // enable same day and time Activity because of uncheck
+    disableOrEnableActivity('js-frameworks' , false);
+    sum -= 100;
+  }
+});
 
-// Tuesday 1-pm-4pm
-// js-libs
-// node
-// Tuesday 9am-12pm
-// express
-// js-frameworks
-// Wednesday 9am-12pm
-// build-tools
-// Wednesday 1pm-4pm
-// npm
+// Listener vor Activities label "js-frameworks"
+$jsFrameworks.on('change', function(){
+  if ($(this).is(':checked')) {
+    // disable same day and time Activity
+    disableOrEnableActivity('express' , true);
+    sum += 100;
+  } else {
+    // enable same day and time Activity because of uncheck
+    disableOrEnableActivity('express' , false);
+    sum -= 100;
+  }
+});
 
+// Listener vor Activities label "build-tools"
+$buildTools.on('change', function(){
+  if ($(this).is(':checked')) {
+    sum += 100;
+  } else {
+    sum -= 100;
+  }
+});
 
-//
-//
-//
-// $all.attr("disabled", true);
-// $jsFrameworks.attr("disabled", true);
-// $jsLibs.attr("disabled", true);
-// $express.attr("disabled", true);
-// $node.attr("disabled", true);
-// $buildTools.attr("disabled", true);
-// $npm.attr("disabled", true);
+// Listener vor Activities label "npm"
+$npm.on('change', function(){
+  if ($(this).is(':checked')) {
+    sum += 100;
+  } else {
+    sum -= 100;
+  }
+});
 
-
-
-// ”Register for Activities” section
+// Listener for fieldset .activities and update Total Sum text
+$activitySet.on('change', function(){
+  updateSum(sum);
+});
