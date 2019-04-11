@@ -4,6 +4,17 @@ const $otherTitle = $('#other-title');
 const $designSelection = $('#design');
 const $activitySet = $('.activities input');
 
+// Activity checkboxes
+const $all = $('.activities input[name="all"]');
+const $jsFrameworks = $('.activities input[name="js-frameworks"]');
+const $jsLibs = $('.activities input[name="js-libs"]');
+const $express = $('.activities input[name="express"]');
+const $node = $('.activities input[name="node"]');
+const $buildTools = $('.activities input[name="build-tools"]');
+const $npm = $('.activities input[name="npm"]');
+  // Sum in total label
+let sum = 0;
+
 // Hiding the "Other Job Role" by default
 $(window).on('load', function(){
   // Hiding the "Other Job Role"
@@ -45,16 +56,6 @@ $designSelection.on('change', function(){
   }
 });
 
-// Activity checkboxes
-const $all = $('.activities input[name="all"]');
-const $jsFrameworks = $('.activities input[name="js-frameworks"]');
-const $jsLibs = $('.activities input[name="js-libs"]');
-const $express = $('.activities input[name="express"]');
-const $node = $('.activities input[name="node"]');
-const $buildTools = $('.activities input[name="build-tools"]');
-const $npm = $('.activities input[name="npm"]');
-// Sum in total label
-let sum = 0;
 $('.activities').append('<label id="totalSum"></label>')
 
 // Update and show the Total Sum or hide it if Sum = $0
@@ -157,7 +158,49 @@ $npm.on('change', function(){
   }
 });
 
-// Listener for fieldset .activities and update Total Sum text
+// Listener for fieldset .activities
 $activitySet.on('change', function(){
+  // update Total Sum text
   updateSum(sum);
 });
+
+
+const $payment = $('#payment');
+const $creditCard = $('#credit-card');
+const $paypal = $('#credit-card').next();
+const $bitcoin = $paypal.next();
+
+
+
+$payment.on('change', function(){
+  console.log(this.value);
+  if (this.value === 'credit card') {
+    $('#credit-card').next().hide();
+    $('#credit-card').next().next().hide();
+  } else if (this.value === 'paypal') {
+    $('#credit-card').hide()
+  } else if (this.value === 'bitcoin') {
+
+  } else {
+
+  }
+});
+
+console.log($paypal.hide());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// breaker
