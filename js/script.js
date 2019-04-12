@@ -15,12 +15,25 @@ const $npm = $('.activities input[name="npm"]');
   // Sum in total label
 let sum = 0;
 
+// Payment Const´s
+const $payment = $('#payment');
+const $creditCard = $('#credit-card');
+const $paypal = $('#credit-card').next();
+const $bitcoin = $paypal.next();
+
+
+
 // Hiding the "Other Job Role" by default
 $(window).on('load', function(){
   // Hiding the "Other Job Role"
   $otherTitle.hide();
   // Hiding colors-js-puns by default
   $("#colors-js-puns").hide();
+  // Hide Bitcoin and Paypal informations
+  $('#payment option[value="credit card"]').attr('selected', 'selected');
+  $('#payment option[value="select_method"]').attr('disabled', 'disabled');
+  $paypal.hide();
+  $bitcoin.hide();
 });
 
 
@@ -56,7 +69,7 @@ $designSelection.on('change', function(){
   }
 });
 
-$('.activities').append('<label id="totalSum"></label>')
+$('.activities').append('<label id="totalSum"></label>');
 
 // Update and show the Total Sum or hide it if Sum = $0
 const updateSum = (sum) => {
@@ -164,32 +177,58 @@ $activitySet.on('change', function(){
   updateSum(sum);
 });
 
-
-const $payment = $('#payment');
-const $creditCard = $('#credit-card');
-const $paypal = $('#credit-card').next();
-const $bitcoin = $paypal.next();
-
-
-
 $payment.on('change', function(){
   console.log(this.value);
   if (this.value === 'credit card') {
-    $('#credit-card').next().hide();
-    $('#credit-card').next().next().hide();
+    $paypal.hide();
+    $bitcoin.hide();
+    $creditCard.show();
   } else if (this.value === 'paypal') {
-    $('#credit-card').hide()
+    $creditCard.hide()
+    $bitcoin.hide();
+    $paypal.show();
   } else if (this.value === 'bitcoin') {
-
+    $creditCard.hide()
+    $paypal.hide();
+    $bitcoin.show();
   } else {
 
   }
 });
 
-console.log($paypal.hide());
+const $username = $('#name');
+const $email = $('#mail');
+
+const $usernameValidation = () => {
+  if ($username.val()){
+    alert('Treu');
+  }else {
+    alert('Falsey');
+  }
+};
+
+const $emailValidation = () => {
+  if ( $email.val() ) {
+    let $regex = /^[^@]+@[^@.]+\.[a-z]+$/i;
+    let valid = $regex.test($email.val());
+    if ( valid === false ) {
+      let $jobRole = $('#mail').next();
+      $('#mail').after('<span id="invalidMail">Invalid Email</span>');
+      $('#invalidMail').css('color', 'red').css('marginTop', '10px');
+      $('#mail').css('marginBottom', '0').css('border', '1px solid red');
+      $jobRole.css('marginTop', '10px');
+    }
+  }
+};
 
 
 
+const $submitButton = $('button[type="submit"]');
+$submitButton.on('click', function(e){
+  e.preventDefault();
+  $usernameValidation();
+  $emailValidation();
+});
 
 
 
