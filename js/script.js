@@ -200,10 +200,12 @@ const $username = $('#name');
 const $email = $('#mail');
 
 const $usernameValidation = () => {
-  if ($username.val()){
-    alert('Treu');
-  }else {
-    alert('Falsey');
+  if ( !$username.val()){
+    $('#name').css('marginBottom', '0px');
+    $('#name')
+      .after('<span id="username_error">Please provide a Username</span>')
+    $('#username_error').css('color', 'red')
+    $('#mail').prev().css('marginTop', '10px')
   }
 };
 
@@ -221,13 +223,19 @@ const $emailValidation = () => {
   }
 };
 
-
+const $activityCheck = () => {
+  if ($('.activities input[type="checkbox"]:checked').length < 1) {
+    $('.activities').append('<span>At least one acitivity has to be selected.</span>')
+    $('.activities span').css('color', 'red');
+  }
+};
 
 const $submitButton = $('button[type="submit"]');
 $submitButton.on('click', function(e){
   e.preventDefault();
   $usernameValidation();
   $emailValidation();
+  $activityCheck();
 });
 
 
