@@ -253,7 +253,7 @@ const $emailValidation = () => {
 
 // activity validation
 const $activityValidation = () => {
-  // check if error message is present if user already submitted
+  // check if error message is present if user already submitted, if so, remove it
   if ($('#activityError').length) {
     $('#activityError').remove();
   }
@@ -266,17 +266,35 @@ const $activityValidation = () => {
 
 // creditcard numer validation
 const $creditCardNumberValidation = () => {
+  // check if error message is present if user already submitted, if so, remove it
+  if ( $('#invalidCNumber').length ) {
+    $('#invalidCNumber').remove();
+    $('label[for="cc-num"]').css('color', 'black');
+    $('label[for="cc-num"]').html('Card Number:')
+  }
   // check if valid ( 15 digits )
   const ccRegex = /^\d{13,15}$/;
   let validCC = ccRegex.test($creditCardNumber.val());
-  // if not error
   if ( validCC === false) {
-    $('label[for="cc-num"]').html('Invalid Card number.')
-      .css('color', 'red');
-  // if yes remove red text color from last submit
-  } else {
-    $('label[for="cc-num"]').html('Card Number:')
-      .css('color', 'black');
+    // check if user provided a number lower than 13 but at least 1 digit, or higher than 16 show an error
+    if ( $creditCardNumber.val().length < 13 && $creditCardNumber.val().length > 0 || $creditCardNumber.val().length > 16) {
+      $('.col-6').append('<span id="invalidCNumber">Please enter a number that is between 13 and 16 digits long.</span>')
+        .css('color', 'red')
+        .css('marginBottom', '5px');
+      $('label[for="cc-num"]').html('Invalid Card number.')
+        .css('color', 'red');
+      $('#cc-num').css('marginBottom', '2px');
+      $('label[for="exp-month"]').css('clear', 'both');
+    // if user did not provide any number show another error
+    } else if ( $creditCardNumber.val().length === 0 ){
+      $('.col-6').append('<span id="invalidCNumber">Card Number can not be blank</span>')
+        .css('color', 'red')
+        .css('marginBottom', '5px');
+      $('label[for="cc-num"]').html('Invalid Card number.')
+        .css('color', 'red');
+      $('#cc-num').css('marginBottom', '2px');
+      $('label[for="exp-month"]').css('clear', 'both');
+    }
   }
 };
 
@@ -287,8 +305,8 @@ const $zipCodeValidation = () => {
   let validZipCode = zipCodeRegex.test($zipCode.val());
   // if not show error
   if ( validZipCode === false) {
-    $('label[for="zip"]').html('Invalid Zip Code.')
-      .css('color', 'red');
+     $('label[for="zip"]').html('Invalid Zip Code.')
+       .css('color', 'red');
   // else remove text color from last submit
   } else {
     $('label[for="zip"]').html('Zip Code:')
@@ -311,6 +329,11 @@ const $cvvValidation = () => {
       .css('color', 'black');
   }
 };
+
+// Realtime email validation on keyup
+$('#mail').on('keyup', function(){
+  $emailValidation();
+});
 
 // on form submit
 $submitButton.on('click', function(e){
