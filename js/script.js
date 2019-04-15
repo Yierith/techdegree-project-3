@@ -4,6 +4,9 @@ const $otherTitle = $('#other-title');
 const $designSelection = $('#design');
 const $activitySet = $('.activities input');
 
+const $username = $('#name');
+const $email = $('#mail');
+
 // Activity checkboxes
 const $all = $('.activities input[name="all"]');
 const $jsFrameworks = $('.activities input[name="js-frameworks"]');
@@ -20,8 +23,9 @@ const $payment = $('#payment');
 const $creditCard = $('#credit-card');
 const $paypal = $('#credit-card').next();
 const $bitcoin = $paypal.next();
-
-
+const $creditCardNumber = $('#cc-num');
+const $zipCode = $('#zip');
+const $cvv = $('#cvv');
 
 // Hiding the "Other Job Role" by default
 $(window).on('load', function(){
@@ -177,8 +181,8 @@ $activitySet.on('change', function(){
   updateSum(sum);
 });
 
+// Listener for Payment
 $payment.on('change', function(){
-  console.log(this.value);
   if (this.value === 'credit card') {
     $paypal.hide();
     $bitcoin.hide();
@@ -195,9 +199,6 @@ $payment.on('change', function(){
 
   }
 });
-
-const $username = $('#name');
-const $email = $('#mail');
 
 const $usernameValidation = () => {
   if ( !$username.val()){
@@ -223,10 +224,25 @@ const $emailValidation = () => {
   }
 };
 
-const $activityCheck = () => {
+const $activityValidation = () => {
   if ($('.activities input[type="checkbox"]:checked').length < 1) {
-    $('.activities').append('<span>At least one acitivity has to be selected.</span>')
+    if ($('#activityError').length) {
+      $('#activityError').remove();
+    }
+    $('.activities').append('<span id="activityError">At least one acitivity has to be selected.</span>');
     $('.activities span').css('color', 'red');
+  }
+};
+
+const $creditCardNumberValidation = () => {
+  const ccRegex = /^\d{13,15}$/;
+  let validCC = ccRegex.test($creditCardNumber.val());
+  if ( validCC === false) {
+    $('label[for="cc-num"]').html('Invalid Card number.')
+      .css('color', 'red');
+  } else {
+    $('label[for="cc-num"]').html('Card Number:')
+      .css('color', 'black');
   }
 };
 
@@ -235,7 +251,8 @@ $submitButton.on('click', function(e){
   e.preventDefault();
   $usernameValidation();
   $emailValidation();
-  $activityCheck();
+  $activityValidation();
+  $creditCardNumberValidation();
 });
 
 
