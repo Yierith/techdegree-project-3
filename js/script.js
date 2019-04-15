@@ -308,7 +308,6 @@ const $creditCardNumberValidation = () => {
       return false;
     }
   }else {
-    console.log("hey!");
     return true;
   }
 };
@@ -372,21 +371,6 @@ $submitButton.on('click', function(e){
   }
   // if any of the validations are true and creditcard informations not false. submit the form
   if (validUserName && validEmail && validActivities && validCreditCardNumber !== false && validZipCode !== false && validCvv!== false ) {
-    console.log("Everything is valid.");
     $('form').unbind('submit').submit();
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-// breaker
