@@ -27,6 +27,9 @@ const $creditCardNumber = $('#cc-num');
 const $zipCode = $('#zip');
 const $cvv = $('#cvv');
 
+// Submit Button
+const $submitButton = $('button[type="submit"]');
+
 // Hiding the "Other Job Role" by default
 $(window).on('load', function(){
   // Hiding the "Other Job Role"
@@ -201,8 +204,12 @@ $payment.on('change', function(){
 });
 
 const $usernameValidation = () => {
+  if ($('#username_error').length) {
+    $('#username_error').remove();
+    $('#name').css('border', '')
+  }
   if ( !$username.val()){
-    $('#name').css('marginBottom', '0px');
+    $('#name').css('marginBottom', '0px').css('border', '1px solid red');
     $('#name')
       .after('<span id="username_error">Please provide a Username</span>')
     $('#username_error').css('color', 'red')
@@ -211,24 +218,33 @@ const $usernameValidation = () => {
 };
 
 const $emailValidation = () => {
+  let $jobRole = $('#mail').next();
+  if ($('#invalidMail').length) {
+    $('#invalidMail').remove();
+    $('#mail').css('border', '');
+  }
   if ( $email.val() ) {
     let $regex = /^[^@]+@[^@.]+\.[a-z]+$/i;
     let valid = $regex.test($email.val());
     if ( valid === false ) {
-      let $jobRole = $('#mail').next();
       $('#mail').after('<span id="invalidMail">Invalid Email</span>');
       $('#invalidMail').css('color', 'red').css('marginTop', '10px');
       $('#mail').css('marginBottom', '0').css('border', '1px solid red');
       $jobRole.css('marginTop', '10px');
     }
+  } else {
+    $('#mail').after('<span id="invalidMail">Email field can not be blank</span>');
+    $('#invalidMail').css('color', 'red').css('marginTop', '10px');
+    $('#mail').css('marginBottom', '0').css('border', '1px solid red');
+    $jobRole.css('marginTop', '10px');
   }
 };
 
 const $activityValidation = () => {
+  if ($('#activityError').length) {
+    $('#activityError').remove();
+  }
   if ($('.activities input[type="checkbox"]:checked').length < 1) {
-    if ($('#activityError').length) {
-      $('#activityError').remove();
-    }
     $('.activities').append('<span id="activityError">At least one acitivity has to be selected.</span>');
     $('.activities span').css('color', 'red');
   }
@@ -246,13 +262,38 @@ const $creditCardNumberValidation = () => {
   }
 };
 
-const $submitButton = $('button[type="submit"]');
+const $zipCodeValidation = () => {
+  const zipCodeRegex = /^\d{5}$/;
+  let validZipCode = zipCodeRegex.test($zipCode.val());
+  if ( validZipCode === false) {
+    $('label[for="zip"]').html('Invalid Zip Code.')
+      .css('color', 'red');
+  } else {
+    $('label[for="zip"]').html('Zip Code:')
+      .css('color', 'black');
+  }
+};
+
+const $cvvValidation = () => {
+  const cvvRegex = /^\d{3}$/;
+  let validCvv = cvvRegex.test($cvv.val());
+  if ( validCvv === false) {
+    $('label[for="cvv"]').html('Invalid CVV.')
+      .css('color', 'red');
+  } else {
+    $('label[for="cvv"]').html('CVV:')
+      .css('color', 'black');
+  }
+};
+
 $submitButton.on('click', function(e){
   e.preventDefault();
   $usernameValidation();
   $emailValidation();
   $activityValidation();
   $creditCardNumberValidation();
+  $zipCodeValidation();
+  $cvvValidation();
 });
 
 
