@@ -76,6 +76,7 @@ $designSelection.on('change', function(){
   }
 });
 
+// append total sum label for activities
 $('.activities').append('<label id="totalSum"></label>');
 
 // Update and show the Total Sum or hide it if Sum = $0
@@ -184,7 +185,7 @@ $activitySet.on('change', function(){
   updateSum(sum);
 });
 
-// Listener for Payment
+// Listener for Payment, show and hide specific informations
 $payment.on('change', function(){
   if (this.value === 'credit card') {
     $paypal.hide();
@@ -203,11 +204,14 @@ $payment.on('change', function(){
   }
 });
 
+// Username validation
 const $usernameValidation = () => {
+  // check if error message is present if user already submitted
   if ($('#username_error').length) {
     $('#username_error').remove();
     $('#name').css('border', '')
   }
+  // check if username´s value is provided or not
   if ( !$username.val()){
     $('#name').css('marginBottom', '0px').css('border', '1px solid red');
     $('#name')
@@ -217,21 +221,28 @@ const $usernameValidation = () => {
   }
 };
 
+// email validation
 const $emailValidation = () => {
+  // needed const
   let $jobRole = $('#mail').next();
+  // check if error message is present if user already submitted
   if ($('#invalidMail').length) {
     $('#invalidMail').remove();
     $('#mail').css('border', '');
   }
+  // check if email is provided
   if ( $email.val() ) {
+    // check if email is valid ( username@provider.xxx )
     let $regex = /^[^@]+@[^@.]+\.[a-z]+$/i;
     let valid = $regex.test($email.val());
+    // if not not valid show error
     if ( valid === false ) {
       $('#mail').after('<span id="invalidMail">Invalid Email</span>');
       $('#invalidMail').css('color', 'red').css('marginTop', '10px');
       $('#mail').css('marginBottom', '0').css('border', '1px solid red');
       $jobRole.css('marginTop', '10px');
     }
+  // if email is not provided show error
   } else {
     $('#mail').after('<span id="invalidMail">Email field can not be blank</span>');
     $('#invalidMail').css('color', 'red').css('marginTop', '10px');
@@ -240,60 +251,79 @@ const $emailValidation = () => {
   }
 };
 
+// activity validation
 const $activityValidation = () => {
+  // check if error message is present if user already submitted
   if ($('#activityError').length) {
     $('#activityError').remove();
   }
+  // check if user at least checked one checkbox - if not show error
   if ($('.activities input[type="checkbox"]:checked').length < 1) {
     $('.activities').append('<span id="activityError">At least one acitivity has to be selected.</span>');
     $('.activities span').css('color', 'red');
   }
 };
 
+// creditcard numer validation
 const $creditCardNumberValidation = () => {
+  // check if valid ( 15 digits )
   const ccRegex = /^\d{13,15}$/;
   let validCC = ccRegex.test($creditCardNumber.val());
+  // if not error
   if ( validCC === false) {
     $('label[for="cc-num"]').html('Invalid Card number.')
       .css('color', 'red');
+  // if yes remove red text color from last submit
   } else {
     $('label[for="cc-num"]').html('Card Number:')
       .css('color', 'black');
   }
 };
 
+// zip code validation
 const $zipCodeValidation = () => {
+  // check if valid ( 5 digits )
   const zipCodeRegex = /^\d{5}$/;
   let validZipCode = zipCodeRegex.test($zipCode.val());
+  // if not show error
   if ( validZipCode === false) {
     $('label[for="zip"]').html('Invalid Zip Code.')
       .css('color', 'red');
+  // else remove text color from last submit
   } else {
     $('label[for="zip"]').html('Zip Code:')
       .css('color', 'black');
   }
 };
 
+// cvv validation
 const $cvvValidation = () => {
+  // check if valid
   const cvvRegex = /^\d{3}$/;
   let validCvv = cvvRegex.test($cvv.val());
+  // if not show error
   if ( validCvv === false) {
     $('label[for="cvv"]').html('Invalid CVV.')
       .css('color', 'red');
+  // else remove text color from last submit
   } else {
     $('label[for="cvv"]').html('CVV:')
       .css('color', 'black');
   }
 };
 
+// on form submit
 $submitButton.on('click', function(e){
   e.preventDefault();
   $usernameValidation();
   $emailValidation();
   $activityValidation();
-  $creditCardNumberValidation();
-  $zipCodeValidation();
-  $cvvValidation();
+  // if payment creditcard is checked, do extra validations for number, zip, cvv
+  if ( $('#payment option[value="credit card"]').is(':selected') ) {
+    $creditCardNumberValidation();
+    $zipCodeValidation();
+    $cvvValidation();
+  }
 });
 
 
