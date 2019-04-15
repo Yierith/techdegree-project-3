@@ -218,6 +218,9 @@ const $usernameValidation = () => {
       .after('<span id="username_error">Please provide a Username</span>')
     $('#username_error').css('color', 'red')
     $('#mail').prev().css('marginTop', '10px')
+    return false;
+  }else {
+    return true
   }
 };
 
@@ -241,6 +244,9 @@ const $emailValidation = () => {
       $('#invalidMail').css('color', 'red').css('marginTop', '10px');
       $('#mail').css('marginBottom', '0').css('border', '1px solid red');
       $jobRole.css('marginTop', '10px');
+      return false;
+    }else {
+      return true
     }
   // if email is not provided show error
   } else {
@@ -248,6 +254,7 @@ const $emailValidation = () => {
     $('#invalidMail').css('color', 'red').css('marginTop', '10px');
     $('#mail').css('marginBottom', '0').css('border', '1px solid red');
     $jobRole.css('marginTop', '10px');
+    return false;
   }
 };
 
@@ -261,6 +268,9 @@ const $activityValidation = () => {
   if ($('.activities input[type="checkbox"]:checked').length < 1) {
     $('.activities').append('<span id="activityError">At least one acitivity has to be selected.</span>');
     $('.activities span').css('color', 'red');
+    return false;
+  }else {
+    return true;
   }
 };
 
@@ -285,6 +295,7 @@ const $creditCardNumberValidation = () => {
         .css('color', 'red');
       $('#cc-num').css('marginBottom', '2px');
       $('label[for="exp-month"]').css('clear', 'both');
+      return false;
     // if user did not provide any number show another error
     } else if ( $creditCardNumber.val().length === 0 ){
       $('.col-6').append('<span id="invalidCNumber">Card Number can not be blank</span>')
@@ -294,7 +305,11 @@ const $creditCardNumberValidation = () => {
         .css('color', 'red');
       $('#cc-num').css('marginBottom', '2px');
       $('label[for="exp-month"]').css('clear', 'both');
+      return false;
     }
+  }else {
+    console.log("hey!");
+    return true;
   }
 };
 
@@ -307,10 +322,12 @@ const $zipCodeValidation = () => {
   if ( validZipCode === false) {
      $('label[for="zip"]').html('Invalid Zip Code.')
        .css('color', 'red');
+      return false;
   // else remove text color from last submit
   } else {
     $('label[for="zip"]').html('Zip Code:')
       .css('color', 'black');
+    return true;
   }
 };
 
@@ -323,10 +340,12 @@ const $cvvValidation = () => {
   if ( validCvv === false) {
     $('label[for="cvv"]').html('Invalid CVV.')
       .css('color', 'red');
+    return false;
   // else remove text color from last submit
   } else {
     $('label[for="cvv"]').html('CVV:')
       .css('color', 'black');
+    return true;
   }
 };
 
@@ -338,14 +357,23 @@ $('#mail').on('keyup', function(){
 // on form submit
 $submitButton.on('click', function(e){
   e.preventDefault();
-  $usernameValidation();
-  $emailValidation();
-  $activityValidation();
+  // get true or false from validation functions
+  let validUserName = $usernameValidation();
+  let validEmail = $emailValidation();
+  let validActivities = $activityValidation();
+  let validCreditCardNumber;
+  let validZipCode;
+  let validCvv;
   // if payment creditcard is checked, do extra validations for number, zip, cvv
   if ( $('#payment option[value="credit card"]').is(':selected') ) {
-    $creditCardNumberValidation();
-    $zipCodeValidation();
-    $cvvValidation();
+    validCreditCardNumber = $creditCardNumberValidation();
+    validZipCode = $zipCodeValidation();
+    validCvv = $cvvValidation();
+  }
+  // if any of the validations are true and creditcard informations not false. submit the form
+  if (validUserName && validEmail && validActivities && validCreditCardNumber !== false && validZipCode !== false && validCvv!== false ) {
+    console.log("Everything is valid.");
+    $('form').unbind('submit').submit();
   }
 });
 
