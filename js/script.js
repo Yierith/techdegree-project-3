@@ -283,11 +283,11 @@ const $creditCardNumberValidation = () => {
     $('label[for="cc-num"]').html('Card Number:')
   }
   // check if valid ( 15 digits )
-  const ccRegex = /^\d{13,15}$/;
+  const ccRegex = /^(\d{13,15})$/;
   let validCC = ccRegex.test($creditCardNumber.val());
   if ( validCC === false) {
     // check if user provided a number lower than 13 but at least 1 digit, or higher than 16 show an error
-    if ( $creditCardNumber.val().length < 13 && $creditCardNumber.val().length > 0 || $creditCardNumber.val().length > 16) {
+    if ( $creditCardNumber.val().length < 13 || $creditCardNumber.val().length > 0 || $creditCardNumber.val().length > 16) {
       $('.col-6').append('<span id="invalidCNumber">Please enter a number that is between 13 and 16 digits long.</span>')
         .css('color', 'red')
         .css('marginBottom', '5px');
